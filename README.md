@@ -150,7 +150,7 @@ This project was developed as part of the Backend Web Development Lab 4 assignme
 
 ## Developed By
 
-Shivanshu Shukla
+Swastik dhal
 
 BCA (AI & DS) - 3rd Semester, Section B
 
