@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Connect Chat</title>
+</head>
+<body>
+
+    <h2>Secure Connect Chat</h2>
+
+    <input type="password" id="token" placeholder="Enter JWT token">
+    <button onclick="connectChat()">Connect</button>
+
+    <p id="status">Not connected</p>
+
+    <hr>
+
+    <input id="message" placeholder="Enter message">
+    <button onclick="sendMessage()">Send</button>
+
+    <ul id="messages"></ul>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        let socket;
+
+        function connectChat() {
+            const token = document.getElementById("token").value;
+
+            if (socket) {
+                socket.disconnect();
+            }
+
+            socket = io({
+                auth: { token: token }
+            });
+
+            socket.on("connect", () => {
+                document.getElementById("status").innerText = "Connected";
+            });
+
+            socket.on("connect_error", (error) => {
+                document.getElementById("status").innerText = error.message;
+            });
+
+            socket.on("disconnect", () => {
+                document.getElementById("status").innerText = "Disconnected";
+            });
+
+            socket.on("chatMessage", (message) => {
+                const li = document.createElement("li");
+                li.textContent = message;
+                document.getElementById("messages").appendChild(li);
+            });
+        }
+
+        function sendMessage() {
+            const input = document.getElementById("message");
+
+            if (socket && socket.connected && input.value.trim()) {
+                socket.emit("chatMessage", input.value);
+                input.value = "";
+            }
+        }
+    </script>
+
+</body>
+</html>
